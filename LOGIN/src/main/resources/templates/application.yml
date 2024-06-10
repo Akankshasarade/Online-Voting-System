@@ -1,0 +1,71 @@
+spring:
+  main:
+    web-application-type: reactive
+  application:
+    name: api-gateway
+
+  cloud:
+    gateway:
+      routes:
+        - id: User
+          uri: lb://User
+          predicates:
+            - Path=/User/**
+          filters:
+            - StripPrefix=1
+
+        - id: ServiceProviders
+          uri: lb://ServiceProviders
+          predicates:
+            - Path=/ServiceProviders/**
+          filters:
+            - StripPrefix=1
+            
+        - id: Category
+          uri: lb://Category
+          predicates:
+            - Path=/Category/**
+          filters:
+            - StripPrefix=1
+            
+        - id: SubCategory
+          uri: lb://SubCategory
+          predicates:
+            - Path=/SubCategory/**
+          filters:
+            - StripPrefix=1
+            
+        - id: Bookings
+          uri: lb://Bookings
+          predicates:
+            - Path=/Bookings/**
+          filters:
+            - StripPrefix=1
+            
+           
+
+server:
+  port: 8083
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:1111/eureka
+      
+  cors:
+    allowed-origin-patterns:
+      - "http://localhost:3000"  
+    #allowed-methods: GET, POST, PUT, DELETE
+    allowed-headers: "*"
+    allow-credentials: true
+    
+    cloud:
+    gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods: "*"
+            allowedHeaders: "*"
